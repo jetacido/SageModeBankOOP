@@ -9,7 +9,7 @@ namespace SageModeBankOOP
             string tempUsername = string.Empty;
             string tempPassword = string.Empty;
             Bank b = new Bank();
-            b.Name = "SageMode";
+            b.Name = "Jet";
             Console.WriteLine($"Welcome to {b.Name}");
             switch (ShowMenu("Register", "Login", "Exit"))
             {
