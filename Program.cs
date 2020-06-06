@@ -82,7 +82,7 @@ namespace SageModeBankOOP
                                 case '2':
                                     Console.Clear();
                                     Console.WriteLine("[Withdraw]");
-                                    Console.Write("Enter the amount to deposit: ");
+                                    Console.Write("Enter the amount to Withdraw: ");
                                     wAmount = 0;
                                     if (decimal.TryParse(Console.ReadLine(), out wAmount))
                                     {
@@ -94,7 +94,7 @@ namespace SageModeBankOOP
                                         else
                                         {
                                             a.Balances[b._CurrentAccountIndex] -= wAmount;
-                                            a.Ledger[b._CurrentAccountIndex] += $"DPS\t\t{DateTime.Now}\t\tP {wAmount}\tP {a.Balances[b._CurrentAccountIndex]}\n";
+                                            a.Ledger[b._CurrentAccountIndex] += $"WPS\t\t{DateTime.Now}\t\tP {wAmount}\tP {a.Balances[b._CurrentAccountIndex]}\n";
                                         }
 
                                     }
