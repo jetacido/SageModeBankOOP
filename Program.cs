@@ -95,7 +95,7 @@ namespace SageModeBankOOP
 
                                     }
                                     break;
-                                case '4':
+                                case '3':
                                     shouldLogout = true;
                                     continue;
                             }
