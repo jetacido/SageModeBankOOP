@@ -35,7 +35,9 @@ namespace SageModeBankOOP
                 Id = _TotalAccountsRegistered,
                 Username = username,
                 Password = password,
-                Balances = new decimal[100]
+                Ledger = new string[100],
+                Balances = new decimal[100],
+                
             };
             _TotalAccountsRegistered++;
             _CurrentAccountIndex = -1;

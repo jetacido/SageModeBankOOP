@@ -8,6 +8,7 @@ namespace SageModeBankOOP
         {
             string tempUsername = string.Empty;
             string tempPassword = string.Empty;
+            string[] ledger = new string[100];
             bool shouldExit = false;
             bool shouldLogout = false;
             decimal dAmount = 0;
@@ -47,6 +48,7 @@ namespace SageModeBankOOP
                         tempUsername = Console.ReadLine();
                         Console.Write("Please enter your password: ");
                         tempPassword = Console.ReadLine();
+                        a.Ledger[b._TotalAccountsRegistered] = string.Empty;
                         shouldLogout = false;
                         if (!b.IsLoggedin(tempUsername, tempPassword))
                         {
@@ -59,7 +61,7 @@ namespace SageModeBankOOP
                             Console.Clear();
                             Console.WriteLine("[Login]");
                             Console.WriteLine($"Balance:  {a.Balances[b._CurrentAccountIndex]}");
-                            switch (ShowMenu("Deposit", "Withdraw", "Logout"))
+                            switch (ShowMenu("Deposit", "Withdraw", "Transactions", "Logout"))
                             {
                                 case '1':
                                     Console.Clear();
@@ -69,6 +71,7 @@ namespace SageModeBankOOP
                                     if (decimal.TryParse(Console.ReadLine(), out dAmount))
                                     {
                                         a.Balances[b._CurrentAccountIndex] += dAmount;
+                                        a.Ledger[b._CurrentAccountIndex] += $"DPS\t\t{DateTime.Now}\t\tP {dAmount}\tP {a.Balances[b._CurrentAccountIndex]}\n";
                                     }
                                     else
                                     {
@@ -91,11 +94,19 @@ namespace SageModeBankOOP
                                         else
                                         {
                                             a.Balances[b._CurrentAccountIndex] -= wAmount;
+                                            a.Ledger[b._CurrentAccountIndex] += $"DPS\t\t{DateTime.Now}\t\tP {wAmount}\tP {a.Balances[b._CurrentAccountIndex]}\n";
                                         }
 
                                     }
                                     break;
                                 case '3':
+                                    Console.Clear();
+                                    Console.WriteLine("[Transactions]");
+                                    Console.WriteLine("Action\t\tDate\t\t\tAmount\tBalance");
+                                    Console.WriteLine(a.Ledger[b._CurrentAccountIndex]);
+                                    Console.ReadKey();
+                                    break;
+                                case '4':
                                     shouldLogout = true;
                                     continue;
                             }

@@ -5,6 +5,7 @@ namespace SageModeBankOOP
         public int Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public string[] Ledger { get; set; }
         public decimal[] Balances { get; set; }
         public decimal amount { get; set; }
         public Transaction[] Transactions { get; set; }
@@ -13,6 +14,7 @@ namespace SageModeBankOOP
         {
             Transactions = new Transaction[1000];
             Balances = new decimal[100];
+            Ledger = new string[100];
         }
 
         public void Withdraw(decimal amount)
