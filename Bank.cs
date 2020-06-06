@@ -2,7 +2,8 @@ namespace SageModeBankOOP
 {
     class Bank
     {
-        private int _TotalAccountsRegistered { get; set; }
+        public int _TotalAccountsRegistered { get; set; }
+        public int _CurrentAccountIndex { get; set; }
         private string _name = "Bank";
         public string Name
         {
@@ -18,12 +19,13 @@ namespace SageModeBankOOP
         }
 
 
-        private Account[] Accounts { get; set; }
+        public Account[] Accounts { get; set; }
 
         public Bank()
         {
             Accounts = new Account[100];
             _TotalAccountsRegistered = 0;
+            _CurrentAccountIndex = -1;
         }
 
         public void Register(string username, string password)
@@ -33,9 +35,11 @@ namespace SageModeBankOOP
                 Id = _TotalAccountsRegistered,
                 Username = username,
                 Password = password,
-                Balance = 0
+                Balances = new decimal[100]
             };
             _TotalAccountsRegistered++;
+            _CurrentAccountIndex = -1;
+            
         }
 
         public bool Login(string username, string password)
@@ -56,6 +60,24 @@ namespace SageModeBankOOP
         public void Transfer()
         {
 
+        }
+
+        public bool IsLoggedin(string username, string password)
+        {
+
+            foreach (Account account in Accounts)
+            {
+                if (account != null && account.Username == username && account.Password == password)
+                {
+                    int x = 0;
+                    x++;
+                    _CurrentAccountIndex = account.Id;
+                    return true;
+                }
+
+            }
+
+            return false;
         }
     }
 }
