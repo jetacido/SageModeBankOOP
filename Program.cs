@@ -4,17 +4,15 @@ namespace SageModeBankOOP
 {
     class Program
     {
+        static string tempUsername = string.Empty;
+        static string tempPassword = string.Empty;
+        static bool shouldLogout = false;
+        static bool shouldExit = false;
+        static Bank b = new Bank();
+        static Account CurrentAccount;
+
         static void Main(string[] args)
         {
-            string tempUsername = string.Empty;
-            string tempPassword = string.Empty;
-            string[] ledger = new string[100];
-            bool shouldExit = false;
-            bool shouldLogout = false;
-            decimal dAmount = 0;
-            decimal wAmount = 0;
-            Bank b = new Bank();
-            Account a = new Account();
             b.Name = "SageMode";
             Console.WriteLine($"Welcome to {b.Name}");
             while (!shouldExit)
@@ -22,97 +20,13 @@ namespace SageModeBankOOP
                 switch (ShowMenu("Register", "Login", "Exit"))
                 {
                     case '1':
-                        Console.Clear();
-                        Console.WriteLine("[Registration]");
-                        Console.Write("Please enter your username: ");
-                        tempUsername = Console.ReadLine();
-                        if (b.IsAccountExist(tempUsername))
-                        {
-                            Console.WriteLine("Account already exist...");
-                            Console.ReadKey();
-                            continue;
-                        }
-                        else
-                        {
-                            Console.Write("Please enter your password: ");
-                            tempPassword = Console.ReadLine();
-                            b.Register(tempUsername, tempPassword);
-                            Console.WriteLine($"Succesfully Registered Total: {b._TotalAccountsRegistered}, Please login!");
-                            Console.ReadKey();
-                        }
+                        DisplayRegistration();
                         break;
                     case '2':
-                        Console.Clear();
-                        Console.WriteLine("[Login]");
-                        Console.Write("Please enter your username: ");
-                        tempUsername = Console.ReadLine();
-                        Console.Write("Please enter your password: ");
-                        tempPassword = Console.ReadLine();
-                        a.Ledger[b._TotalAccountsRegistered] = string.Empty;
-                        shouldLogout = false;
-                        if (!b.IsLoggedin(tempUsername, tempPassword))
-                        {
-                            Console.WriteLine("Invalid Username or Password...");
-                            Console.ReadKey();
-                            continue;
-                        }
-                        while (!shouldLogout)
-                        {
-                            Console.Clear();
-                            Console.WriteLine("[Login]");
-                            Console.WriteLine($"Balance:  {a.Balances[b._CurrentAccountIndex]}");
-                            switch (ShowMenu("Deposit", "Withdraw", "Transactions", "Logout"))
-                            {
-                                case '1':
-                                    Console.Clear();
-                                    Console.WriteLine("[Deposit]");
-                                    Console.Write("Enter the amount to deposit: ");
-                                    dAmount = 0;
-                                    if (decimal.TryParse(Console.ReadLine(), out dAmount))
-                                    {
-                                        a.Balances[b._CurrentAccountIndex] += dAmount;
-                                        a.Ledger[b._CurrentAccountIndex] += $"DPS\t\t{DateTime.Now}\t\tP {dAmount}\tP {a.Balances[b._CurrentAccountIndex]}\n";
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Invalid Amount!");
-                                        Console.ReadKey();
-                                    }
-                                    break;
-                                case '2':
-                                    Console.Clear();
-                                    Console.WriteLine("[Withdraw]");
-                                    Console.Write("Enter the amount to Withdraw: ");
-                                    wAmount = 0;
-                                    if (decimal.TryParse(Console.ReadLine(), out wAmount))
-                                    {
-                                        if (wAmount > a.Balances[b._CurrentAccountIndex])
-                                        {
-                                            Console.WriteLine("Not enough funds!");
-                                            Console.ReadKey();
-                                        }
-                                        else
-                                        {
-                                            a.Balances[b._CurrentAccountIndex] -= wAmount;
-                                            a.Ledger[b._CurrentAccountIndex] += $"WPS\t\t{DateTime.Now}\t\tP {wAmount}\tP {a.Balances[b._CurrentAccountIndex]}\n";
-                                        }
-
-                                    }
-                                    break;
-                                case '3':
-                                    Console.Clear();
-                                    Console.WriteLine("[Transactions]");
-                                    Console.WriteLine("Action\t\tDate\t\t\tAmount\tBalance");
-                                    Console.WriteLine(a.Ledger[b._CurrentAccountIndex]);
-                                    Console.ReadKey();
-                                    break;
-                                case '4':
-                                    shouldLogout = true;
-                                    continue;
-                            }
-                        }
+                        DisplayLogin();
                         break;
                     case '3':
+                        Console.Clear();
                         Console.WriteLine("Thank you for Banking with us.");
                         Console.ReadKey();
                         shouldExit = true;
@@ -122,6 +36,7 @@ namespace SageModeBankOOP
                 }
             }
         }
+
         static char ShowMenu(params string[] items)
         {
             string menuString = "Press ";
@@ -134,6 +49,155 @@ namespace SageModeBankOOP
             ConsoleKeyInfo key = Console.ReadKey();
             Console.WriteLine();
             return key.KeyChar;
+        }
+        static void DisplayRegistration()
+        {
+            Console.Clear();
+            Console.WriteLine("[Registration]");
+            Console.Write("Please enter your username: ");
+            tempUsername = Console.ReadLine();
+            if (b.IsAccountExist(tempUsername))
+            {
+                Console.Write("Account already exist...");
+                Console.Clear();
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.Write("Please enter your password: ");
+                tempPassword = Console.ReadLine();
+                b.Register(tempUsername, tempPassword);
+                Console.Write("Succesfully Registered. Please login!");
+                Console.ReadKey();
+                Console.Clear();
+            }
+        }
+
+        static void DisplayLogin()
+        {
+            Console.Clear();
+            Console.WriteLine("[Login]");
+            Console.Write("Please enter your username: ");
+            tempUsername = Console.ReadLine();
+            Console.Write("Please enter your password: ");
+            tempPassword = Console.ReadLine();
+            CurrentAccount = b.Login(tempUsername, tempPassword);
+
+            if (CurrentAccount != null)
+            {
+                shouldLogout = false;
+
+                while (!shouldLogout)
+                {
+                    Console.Clear();
+                    Console.WriteLine("[Login]");
+                    Console.WriteLine($"Balance: P{CurrentAccount.Balance}");
+
+                    switch (ShowMenu("Deposit", "Withdraw", "Transactions", "Transfer", "Logout"))
+                    {
+                        case '1':
+                            ShowDeposit();
+                            break;
+                        case '2':
+                            ShowWithdraw();
+                            break;
+                        case '3':
+                            ShowTransactionHistory();
+                            break;
+                        case '4':
+                            ShowTransfer();
+                            break;
+                        case '5':
+                            Console.Clear();
+                            Console.Write("Thank you for Banking with us.");
+                            Console.ReadKey();
+                            Console.Clear();
+                            shouldLogout = true;
+                            continue;
+                        default:
+                            break;
+                    }
+
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid Username/Password");
+                Console.ReadKey();
+            }
+        }
+        static void ShowWithdraw()
+        {
+            Console.Clear();
+            Console.WriteLine("[Withdraw]");
+            Console.Write("Enter the amount to withdraw: ");
+            decimal wAmount = 0;
+            if (decimal.TryParse(Console.ReadLine(), out wAmount))
+            {
+                if (wAmount > CurrentAccount.Balance)
+                {
+                    Console.Write("Insufficient funds!");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    CurrentAccount.Withdraw(wAmount);
+                }
+            }
+            else
+            {
+                Console.Write("Invalid Amount entered!");
+                Console.ReadKey();
+            }
+        }
+        static void ShowDeposit()
+        {
+            Console.Clear();
+            Console.WriteLine("[Deposit]");
+            Console.Write("Enter the amount to deposit: ");
+            decimal dAmount = 0;
+            if (decimal.TryParse(Console.ReadLine(), out dAmount))
+            {
+                CurrentAccount.Deposit(dAmount);
+            }
+            else
+            {
+                Console.WriteLine("Invalid Amount!");
+                Console.ReadKey();
+            }
+        }
+        static void ShowTransactionHistory()
+        {
+            Console.Clear();
+            Console.WriteLine("[Transaction History]");
+            Console.WriteLine("Action\t\tDate\t\t\tAmount\tTarget");
+            foreach (Transaction t in CurrentAccount.GetTransactions())
+            {
+                string target = (t.Target != null ? t.Target.Username : "");
+                Console.WriteLine($"{t.Type}\t\t{t.Date}\t {t.Amount}\t {target}");
+            }
+            Console.ReadKey();
+        }
+        static void ShowTransfer()
+        {
+            Console.Clear();
+            Console.WriteLine("[Transfer]");
+            Console.Write("Enter Account ID: ");
+            int receiverID = -1;
+            if (int.TryParse(Console.ReadLine(), out receiverID))
+            {
+                Console.Write("Enter amount to transfer: ");
+                decimal transferAmount = decimal.Parse(Console.ReadLine());
+                if (transferAmount > 0)
+                {
+                    if (!b.Transfer(CurrentAccount, receiverID, transferAmount))
+                    {
+                        Console.WriteLine("Transfer unsuccesful!");
+                        Console.ReadKey();
+                    }
+                }
+                //Console.ReadKey();
+            }
         }
     }
 }
