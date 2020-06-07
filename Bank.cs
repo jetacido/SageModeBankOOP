@@ -17,7 +17,6 @@ namespace SageModeBankOOP
             }
         }
 
-
         private Account[] Accounts { get; set; }
 
         public Bank()
@@ -25,7 +24,6 @@ namespace SageModeBankOOP
             Accounts = new Account[100];
             _TotalAccountsRegistered = 0;
         }
-
         public void Register(string username, string password)
         {
             Accounts[_TotalAccountsRegistered] = new Account
@@ -36,7 +34,6 @@ namespace SageModeBankOOP
             };
             _TotalAccountsRegistered++;
         }
-
         public Account Login(string username, string password)
         {
             foreach (Account account in Accounts)
@@ -47,7 +44,6 @@ namespace SageModeBankOOP
             return null;
 
         }
-
         public bool IsAccountExist(string username)
         {
             foreach (Account account in Accounts)
@@ -57,7 +53,6 @@ namespace SageModeBankOOP
             }
             return false;
         }
-
         public bool Transfer(Account srcAccount, int targetID, decimal amount)
         {
             Account gotoAccount = Accounts[targetID];

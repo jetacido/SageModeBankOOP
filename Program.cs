@@ -13,8 +13,9 @@ namespace SageModeBankOOP
 
         static void Main(string[] args)
         {
-            b.Name = "SageMode";
-            Console.WriteLine($"Welcome to {b.Name}");
+            Console.Clear();
+            b.Name = "J.A.";
+            Console.WriteLine($"Welcome to {b.Name}\n");
             while (!shouldExit)
             {
                 switch (ShowMenu("Register", "Login", "Exit"))
@@ -27,7 +28,7 @@ namespace SageModeBankOOP
                         break;
                     case '3':
                         Console.Clear();
-                        Console.WriteLine("Thank you for Banking with us.");
+                        Console.Write("Thank you for Banking with us.");
                         Console.ReadKey();
                         shouldExit = true;
                         break;
@@ -59,8 +60,12 @@ namespace SageModeBankOOP
             if (b.IsAccountExist(tempUsername))
             {
                 Console.Write("Account already exist...");
-                Console.Clear();
-                Console.ReadKey();
+                ReadandClear();
+            }
+            else if (tempUsername == "" || tempUsername == " ")
+            {
+                Console.Write("Invalid entry");
+                ReadandClear();
             }
             else
             {
@@ -68,15 +73,13 @@ namespace SageModeBankOOP
                 tempPassword = Console.ReadLine();
                 b.Register(tempUsername, tempPassword);
                 Console.Write("Succesfully Registered. Please login!");
-                Console.ReadKey();
-                Console.Clear();
+                ReadandClear();
             }
         }
-
         static void DisplayLogin()
         {
             Console.Clear();
-            Console.WriteLine("[Login]");
+            Console.WriteLine("[Home]");
             Console.Write("Please enter your username: ");
             tempUsername = Console.ReadLine();
             Console.Write("Please enter your password: ");
@@ -110,8 +113,7 @@ namespace SageModeBankOOP
                         case '5':
                             Console.Clear();
                             Console.Write("Thank you for Banking with us.");
-                            Console.ReadKey();
-                            Console.Clear();
+                            ReadandClear();
                             shouldLogout = true;
                             continue;
                         default:
@@ -122,8 +124,8 @@ namespace SageModeBankOOP
             }
             else
             {
-                Console.WriteLine("Invalid Username/Password");
-                Console.ReadKey();
+                Console.Write("Invalid Username/Password");
+                ReadandClear();
             }
         }
         static void ShowWithdraw()
@@ -170,11 +172,14 @@ namespace SageModeBankOOP
         {
             Console.Clear();
             Console.WriteLine("[Transaction History]");
-            Console.WriteLine("Action\t\tDate\t\t\tAmount\tTarget");
-            foreach (Transaction t in CurrentAccount.GetTransactions())
+            Console.WriteLine("Action\t\tDate\t\t\tAmount\tReceiver");
+            foreach (Transaction transact in CurrentAccount.GetTransactions())
             {
-                string target = (t.Target != null ? t.Target.Username : "");
-                Console.WriteLine($"{t.Type}\t\t{t.Date}\t {t.Amount}\t {target}");
+                if (transact.Receiver != null)
+                {
+                    string receiver = transact.Receiver.Username;
+                    Console.WriteLine($"{transact.Type}\t\t{transact.Date}\t {transact.Amount}\t {receiver}");
+                }
             }
             Console.ReadKey();
         }
@@ -192,12 +197,21 @@ namespace SageModeBankOOP
                 {
                     if (!b.Transfer(CurrentAccount, receiverID, transferAmount))
                     {
-                        Console.WriteLine("Transfer unsuccesful!");
+                        Console.Write("Transfer unsuccessful!");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.Write("Transfer Successful!");
                         Console.ReadKey();
                     }
                 }
-                //Console.ReadKey();
             }
+        }
+        static void ReadandClear()
+        {
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }

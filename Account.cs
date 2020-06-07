@@ -10,39 +10,30 @@ namespace SageModeBankOOP
         private int _TransCount { get; set; } = 0;
         public Transaction[] Transactions { get; set; }
 
-
         public Account()
         {
             Transactions = new Transaction[1000];
             Balance = 0;
         }
-
         public void Withdraw(decimal amount)
         {
             Balance -= amount;
             AddTransaction("WTH", amount, this);
 
         }
-
         public void Deposit(decimal amount)
         {
             Balance += amount;
             AddTransaction("DPT", amount, this);
         }
-
-        public void Transfer(Account receiverAcc)
-        {
-
-        }
-
-        public void AddTransaction(string transaction, decimal amount, Account target = null)
+        public void AddTransaction(string transaction, decimal amount, Account receiver = null)
         {
             Transactions[_TransCount] = new Transaction
             {
                 Id = _TransCount,
                 Type = transaction,
                 Amount = amount,
-                Target = target,
+                Receiver = receiver,
                 Balance = Balance,
             };
             _TransCount++;
